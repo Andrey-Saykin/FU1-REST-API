@@ -1,0 +1,10 @@
+# Editor and Evironment
+.venv/
+.vscode/
+
+# Mac
+.DS_Store
+
+# Python
+*.pyc
+__pycache__/

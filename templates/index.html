@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+
+{% block title %}Home{% endblock title %}
+
+{% block content %}
+    <!-- Hero Section -->
+    <div class="jumbotron text-center mb-5">
+        {% if user %}
+            <h1 class="display-4">Welcome, {{ user }}!</h1>
+        {% else %}
+            <h1 class="display-4">Welcome to Our Website!</h1>
+        {% endif %}
+        <p class="lead">We are glad to have you here. Explore our shop and enjoy our services.</p>
+        <a class="btn btn-primary btn-lg" href="{{ url_for('shop') }}" role="button">Visit Shop</a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container mb-5">
+        <div class="row">
+            <div class="col-md-4">
+                <h2>About Us</h2>
+                <p>Learn more about our company and values.</p>
+                <a class="btn btn-secondary" href="#" role="button">Learn More</a>
+            </div>
+            <div class="col-md-4">
+                <h2>Services</h2>
+                <p>Discover the wide range of services we offer.</p>
+                <a class="btn btn-secondary" href="#" role="button">Our Services</a>
+            </div>
+            <div class="col-md-4">
+                <h2>Contact</h2>
+                <p>Get in touch with us for any queries or support.</p>
+                <a class="btn btn-secondary" href="#" role="button">Contact Us</a>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
