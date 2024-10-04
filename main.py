@@ -94,7 +94,7 @@ def api_v1_supplier():
 def api_v1_supplier_id(supplier_id):
     success = False
     if request.method == 'GET':
-        result = jsonify(con.get_supplier(supplier_id))
+        result = con.get_supplier(supplier_id)
         success = True
         return {'success': success, 'result': result}
     elif request.method == 'UPDATE':
@@ -105,8 +105,11 @@ def api_v1_supplier_id(supplier_id):
 
         if not filtered_data:
             return {'success': success, 'message': 'No valid fields to update in json.'}
+        
+        if filtered_data != data:
+            print('Some fields that are not allowed were removed.')
 
-        columns = ', '.join(f"{key} = ?" for key in filtered_data.keys())
+        columns = tuple(filtered_data.keys())
         values = tuple(filtered_data.values())
         changes = con.update_supplier(supplier_id, columns, values)
         if changes:

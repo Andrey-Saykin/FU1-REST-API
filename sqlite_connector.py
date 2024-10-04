@@ -1,89 +1,75 @@
 import sqlite3
+from contextlib import contextmanager
 
 # Default Functions
-def connect():
-    return sqlite3.connect('sqlite.db')
-
-def insert(cursor, table, columns, values):
+@contextmanager
+def get_db_connection():
+    connector = sqlite3.connect('sqlite.db')
+    cursor = connector.cursor()
     try:
-        query = f'INSERT INTO {table}({columns}) VALUES({values})'
-        print(query)
-        cursor.execute(query)
-        return cursor.lastrowid
+        yield cursor
+        connector.commit()
     except Exception as e:
-        print(f"An error occurred: {str(e)}")
-        return False
-    
-def select(cursor, table):
-    cursor.execute(f'SELECT * FROM {table}')
-    return cursor.fetchall()
+        connector.rollback()
+        print(f"Database error: {e}")
+    finally:
+        cursor.close()
+        connector.close()
 
-def select_where(cursor, table, condition):
-    query = f'SELECT * FROM {table} WHERE {condition}'
-    print(query)
-    cursor.execute(query)
-    return cursor.fetchall()
+def execute_query(query, params=()):
+    with get_db_connection() as cursor:
+        cursor.execute(query, params)
+        return cursor
 
-def update(cursor, table, columns, values, condition):
-    query = f'UPDATE {table} SET {columns} WHERE {condition}'
-    print(query)
-    cursor.execute(query, values)
+def insert(table, columns, values):
+    query = f'INSERT INTO {table} ({columns}) VALUES ({", ".join(["?" for _ in values])})'
+    cursor = execute_query(query, values)
     return cursor.rowcount
 
-def delete(cursor, table, condition):
-    cursor.execute(f'DELETE FROM {table} WHERE {condition}')
+def select(table, columns='*', condition=None, params=()):
+    query = f'SELECT {columns} FROM {table}'
+    if condition:
+        query += f' WHERE {condition}'
+    with get_db_connection() as cursor:
+        cursor.execute(query, params)
+        return cursor.fetchall()
+
+def update(table, columns, values, condition, condition_params=()):
+    set_clause = ', '.join([f"{col} = ?" for col in columns])
+    query = f'UPDATE {table} SET {set_clause} WHERE {condition}'
+    params = values + condition_params
+    cursor = execute_query(query, params)
+    return cursor.rowcount
+
+def delete(table, condition, params=()):
+    query = f'DELETE FROM {table} WHERE {condition}'
+    cursor = execute_query(query, params)
     return cursor.rowcount
 
 # Custom Functions
 def create_supplier(name, address, city, zip_code, country, contact_name, contact_phone, contact_email):
-    connector = connect()
-    cursor = connector.cursor()
-
-    columns = f'name, address, city, zip_code, country, contact_name, contact_phone, contact_email'
-    values = f'"{name}", "{address}", "{city}", "{zip_code}", "{country}", "{contact_name}", "{contact_phone}", "{contact_email}"'
-    success = insert(cursor, 'supplier', columns, values)
-    if success:
-        connector.commit()
-    return success
+    columns = 'name, address, city, zip_code, country, contact_name, contact_phone, contact_email'
+    values = (name, address, city, zip_code, country, contact_name, contact_phone, contact_email)
+    return insert('supplier', columns, values)
 
 def get_supplier(id):
-    connector = connect()
-    cursor = connector.cursor()
+    condition = 'id = ?'
+    return select('supplier', condition=condition, params=(id,))
 
-    condition = f'id = {id}'
-    return select_where(cursor, 'supplier', condition)
-
-def get_supplieres(limit:int=None, condition=None):
-    connector = connect()
-    cursor = connector.cursor()
-
+def get_supplieres(limit=None, condition=None, params=()):
+    query = 'SELECT * FROM supplier'
     if condition:
-        query = f'SELECT * FROM supplier WHERE {condition}'
-    else:
-        query = 'SELECT * FROM supplier'
-
+        query += f' WHERE {condition}'
     if limit:
         query += f' LIMIT {limit}'
-
-    cursor.execute(query)
-    return cursor.fetchall()
+    with get_db_connection() as cursor:
+        cursor.execute(query, params)
+        return cursor.fetchall()
 
 def update_supplier(id, columns, values):
-    connector = connect()
-    cursor = connector.cursor()
-
     condition = f'id = {id}'
-    changes = update(cursor, 'supplier', columns, values, condition)
-    if changes:
-        connector.commit()
-    return changes
+    return update('supplier', columns, values, condition)
 
 def delete_supplier(id):
-    connector = connect()
-    cursor = connector.cursor()
-
-    condition = f'id = {id}'
-    deleted = delete(cursor, 'supplier', condition)
-    if deleted:
-        connector.commit()
-    return deleted
+    condition = 'id = ?'
+    return delete('supplier', condition, (id,))
