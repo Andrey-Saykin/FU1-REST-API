@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard{% endblock title %}
+
+{% block header %}
+    <h1>Admin Dashboard</h1>
+{% endblock header %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-12">
+            <h2>Supplier</h2>
+            <!-- Test for GET method -->
+            <form method="GET" action="/api/v1/supplier">
+                <label for="get_id">ID (optional):</label>
+                <input type="text" id="get_id" name="id">
+                <button type="submit">GET</button>
+            </form>
+            <!-- Test for PUT method -->
+            <form method="PUT" action="/api/v1/supplier">
+                <label for="put_id">ID:</label>
+                <input type="text" id="put_id" name="id" required>
+                <label for="put_name">Name:</label>
+                <input type="text" id="put_name" name="name" required>
+                <label for="put_address">Address:</label>
+                <input type="text" id="put_address" name="address">
+                <label for="put_city">City:</label>
+                <input type="text" id="put_city" name="city">
+                <label for="put_zip_code">Zip Code:</label>
+                <input type="text" id="put_zip_code" name="zip_code">
+                <label for="put_country">Country:</label>
+                <input type="text" id="put_country" name="country">
+                <label for="put_contact_name">Contact Name:</label>
+                <input type="text" id="put_contact_name" name="contact_name">
+                <label for="put_contact_phone">Contact Phone:</label>
+                <input type="text" id="put_contact_phone" name="contact_phone">
+                <label for="put_contact_email">Contact Email:</label>
+                <input type="text" id="put_contact_email" name="contact_email">
+                <button type="submit">PUT</button>
+            </form>
+            <!-- Test for UPDATE method -->
+            <form method="POST" action="/api/v1/supplier/update">
+                <label for="update_id">ID:</label>
+                <input type="text" id="update_id" name="id" required>
+                <label for="update_name">Name:</label>
+                <input type="text" id="update_name" name="name">
+                <label for="update_address">Address:</label>
+                <input type="text" id="update_address" name="address">
+                <label for="update_city">City:</label>
+                <input type="text" id="update_city" name="city">
+                <label for="update_zip_code">Zip Code:</label>
+                <input type="text" id="update_zip_code" name="zip_code">
+                <label for="update_country">Country:</label>
+                <input type="text" id="update_country" name="country">
+                <label for="update_contact_name">Contact Name:</label>
+                <input type="text" id="update_contact_name" name="contact_name">
+                <label for="update_contact_phone">Contact Phone:</label>
+                <input type="text" id="update_contact_phone" name="contact_phone">
+                <label for="update_contact_email">Contact Email:</label>
+                <input type="text" id="update_contact_email" name="contact_email">
+                <button type="submit">UPDATE</button>
+            </form>
+            <!-- Test for DELETE method -->
+            <form method="DELETE" action="/api/v1/supplier">
+                <label for="delete_id">ID:</label>
+                <input type="text" id="delete_id" name="id" required>
+                <button type="submit">DELETE</button>
+            </form>
+        </div>
+    </div>
+{% endblock content %}

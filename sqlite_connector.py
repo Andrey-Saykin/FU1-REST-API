@@ -67,8 +67,8 @@ def get_supplieres(limit=None, condition=None, params=()):
         return cursor.fetchall()
 
 def update_supplier(id, columns, values):
-    condition = f'id = {id}'
-    return update('supplier', columns, values, condition)
+    condition = f'id = ?'
+    return update('supplier', columns, values, condition, (id,))
 
 def delete_supplier(id):
     condition = 'id = ?'

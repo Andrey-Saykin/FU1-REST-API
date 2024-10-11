@@ -33,6 +33,16 @@ def logout():
     return redirect(url_for('login'))
 
 
+@app.route('/admin/dashboard/api', methods=['GET', 'POST'])
+def admin_dashboard_api():
+    if not 'user' in session:
+        return redirect(url_for('login'))
+    
+    context = {'user': session['user']}
+    
+    return render_template('admin_dashboard_api.html', **context)
+
+
 @app.route('/shop')
 def shop():
     print(session)
@@ -89,7 +99,7 @@ def api_v1_supplier():
     return {'success': success, 'message': 'Invalid request method.'}
 
 
-# curl -X UPDATE http://127.0.0.1:4000/api/v1/supplier/11 -H "Content-Type: application/json" -d '{"name":"mein_name","contact_name":"PeterWal"}'
+# curl -X UPDATE http://127.0.0.1:4000/api/v1/supplier/1 -H "Content-Type: application/json" -d '{"name":"mein_name","contact_name":"PeterWal"}'
 @app.route('/api/v1/supplier/<int:supplier_id>', methods=['GET', 'UPDATE', 'DELETE'])
 def api_v1_supplier_id(supplier_id):
     success = False
@@ -113,6 +123,7 @@ def api_v1_supplier_id(supplier_id):
         values = tuple(filtered_data.values())
         changes = con.update_supplier(supplier_id, columns, values)
         if changes:
+            success = True
             return {'success': success, 'message': 'Supplier updated successfully.'}
         return {'success': success, 'message': 'No changes applied.'}
         
