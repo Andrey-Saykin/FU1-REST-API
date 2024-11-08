@@ -34,11 +34,11 @@ class User(Base):
     is_active: Mapped[bool] = mapped_column(default=True)
     is_staff: Mapped[bool] = mapped_column(default=False)
     is_superuser: Mapped[bool] = mapped_column(default=False)
-    address_id: Mapped[int] = mapped_column(ForeignKey('address.id'))
+    address_id: Mapped[Optional[int]] = mapped_column(ForeignKey('address.id'), nullable=True)
     address: Mapped[Optional['Address']] = relationship('Address', back_populates='user', uselist=False)
     groups: Mapped[List['Group']] = relationship('Group', secondary=user_group, back_populates='users')
 
-    modified: Mapped[datetime] = mapped_column(onupdate=func.now())
+    modified: Mapped[datetime] = mapped_column(default=func.now(), onupdate=func.now())
     created: Mapped[datetime] = mapped_column(server_default=func.now())
 
     def __repr__(self):
