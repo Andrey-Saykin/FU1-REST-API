@@ -4,7 +4,7 @@ from contextlib import contextmanager
 # Default Functions
 @contextmanager
 def get_db_connection():
-    connector = sqlite3.connect('sqlite.db')
+    connector = sqlite3.connect('sqlite_v01.db')
     cursor = connector.cursor()
     try:
         yield cursor

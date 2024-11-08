@@ -2,10 +2,19 @@ from flask import Flask
 from flask import render_template
 from flask import request, session, redirect, url_for
 from flask import jsonify
+from sqlalchemy import create_engine
+from sqlalchemy.orm import Session
+from sqlalchemy import select
 import sqlite_connector as con
+from models import db, Base, User, Group, Address
 
 app = Flask(__name__)
 app.secret_key="f5ds7dsadsf7dg68s7d5"
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///sqlite_v01.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db.init_app(app)
+
+engine = create_engine("sqlite:///sqlite_v01.db", echo=True)
 
 @app.route('/')
 def index():
@@ -19,11 +28,11 @@ def login():
     if request.method == 'POST':
         email = request.form['email']
         pw = request.form['pw']
-        if email == "saykin.developer@gmail.com" and pw == "Test1234!":
-            print(session)
+        # Hardcoced login for admin and mitarbeiter
+        if email == "admin@gmail.com" and pw == "admin1234" \
+        or email == "mitarbeiter@gmail.com" and pw == "mitarbeiter1234":
             session['user'] = email
             return redirect(url_for('index'))
-            # return redirect(url_for('shop'))
     return render_template('login.html')
 
 
@@ -49,7 +58,7 @@ def shop():
     context = {'member': 'Nicht-Kunden'}
     if 'user' in session:
         context['member'] = 'Kunden'
-        context['user'] = session['user']
+        context['user'] = session['user']   
     return render_template('shop_member.html', **context)
 
 # API Routes
@@ -66,7 +75,7 @@ def shop():
 #         return {'user': 'DELETE'}
 #     return {'user': 'POST'}
 
-
+# TODO: API works currently on a deprecated sqlite database. Please update the code to work with the new database.
 # PUT Code:
 # curl -X PUT http://127.0.0.1:4000/api/v1/supplier -H "Content-Type: application/json" -d '{"name":"deinname","address":"witzig","city":"rofl","zip_code":"68750","country":"flashland","contact_name":"Peter","contact_phone":"46576879087","contact_email":"123@gmail.com"}'
 @app.route('/api/v1/supplier', methods=['GET', 'PUT'])
@@ -77,6 +86,7 @@ def api_v1_supplier():
         success = True
         return {'success': success, 'result': result}
     elif request.method == 'PUT':
+        print('PUT')
         data = request.get_json()
         print(data)
         name = data.get('name')
@@ -89,10 +99,10 @@ def api_v1_supplier():
         contact_email = data.get('contact_email')
 
         if name and address and city and zip_code and country and contact_name and contact_phone and contact_email:
-            supplier_id = con.create_supplier(name, address, city, zip_code, country, contact_name, contact_phone, contact_email)
-            if supplier_id:
+            row_count = con.create_supplier(name, address, city, zip_code, country, contact_name, contact_phone, contact_email)
+            if row_count:
                 success = True
-                return {'success': success, 'id': supplier_id, 'message': 'Supplier added successfully.'}
+                return {'success': success, 'message': 'Supplier added successfully.'}
             return {'success': success, 'message': 'An error occurred while adding the supplier.'}
         else:
             return {'success': success, 'message': 'Missing required fields.'}
