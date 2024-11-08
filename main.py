@@ -152,7 +152,7 @@ def api_v1_user_id(user_id):
             session.commit()
             return jsonify({'message': 'User deleted successfully.'}), 200
 
-# PUT Code:
+# curl -X GET http://127.0.0.1:4000/api/v1/supplier -H "Content-Type: application/json"
 # curl -X PUT http://127.0.0.1:4000/api/v1/supplier -H "Content-Type: application/json" -d '{"name":"deinname","address":"witzig","city":"rofl","zip_code":"68750","country":"flashland","contact_name":"Peter","contact_phone":"46576879087","contact_email":"123@gmail.com"}'
 @app.route('/api/v1/supplier', methods=['GET', 'PUT'])
 def api_v1_supplier():
