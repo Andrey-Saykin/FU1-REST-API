@@ -1,9 +1,11 @@
 from flask import Flask, render_template, request, session, redirect, url_for, jsonify
+from flask_swagger_ui import get_swaggerui_blueprint
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import select
 import sqlite_connector as con
 from models import db, Base, User, Group, Address
+
 
 app = Flask(__name__)
 app.secret_key="f5ds7dsadsf7dg68s7d5"
@@ -13,6 +15,13 @@ db.init_app(app)
 
 engine = create_engine("sqlite:///sqlite_v01.db", echo=True)
 Session = sessionmaker(bind=engine)
+
+# OpenAPI-Spezifikation bereitstellen
+SWAGGER_URL = '/swagger'
+API_URL = '/static/swagger.yaml'
+swaggerui_blueprint = get_swaggerui_blueprint(SWAGGER_URL, API_URL,
+                                              config={'app_name': "GSO Beispiel-API"})
+app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
 
 with app.app_context():
     Base.metadata.create_all(engine)
@@ -64,6 +73,11 @@ def shop():
 
 # API Routes
 
+# Beispiel-Endpunkt
+@app.route('/test/users', methods=['GET'])
+def get_users():
+    return jsonify([{'id': 1, 'name': 'Bauer'}, {'id': 2, 'name': 'Schulze'}])
+
 # curl -X GET http://127.0.0.1:4000/api/v1/user -H "Content-Type: application/json"
 # curl -X PUT http://127.0.0.1:4000/api/v1/user -H "Content-Type: application/json" -d '{"first_name":"deinvorname", "last_name":"deinnachname", "email":"deineemail@gmail.com","is_active":true,"is_staff":false,"is_superuser":false,"address_id":null}'
 @app.route('/api/v1/user', methods=['GET', 'PUT'])
@@ -106,9 +120,9 @@ def api_v1_user():
     return jsonify({'message': 'Invalid request method.'})
 
 # curl -X GET http://127.0.0.1:4000/api/v1/user/1 -H "Content-Type: application/json"
-# curl -X UPDATE http://127.0.0.1:4000/api/v1/user/1 -H "Content-Type: application/json" -d '{"first_name":"newname", "last_name":"newlastname"}'
+# curl -X PUT http://127.0.0.1:4000/api/v1/user/1 -H "Content-Type: application/json" -d '{"first_name":"newname", "last_name":"newlastname"}'
 # curl -X DELETE http://127.0.0.1:4000/api/v1/user/1 -H "Content-Type: application/json"
-@app.route('/api/v1/user/<int:user_id>', methods=['GET', 'UPDATE', 'DELETE'])
+@app.route('/api/v1/user/<int:user_id>', methods=['GET', 'PUT', 'DELETE'])
 def api_v1_user_id(user_id):
     if request.method == 'GET':
         with Session() as session:
@@ -126,7 +140,7 @@ def api_v1_user_id(user_id):
                 'address_id': user.address_id
             }
             return jsonify(user_dict)
-    elif request.method == 'UPDATE':
+    elif request.method == 'PUT':
         data = request.get_json()
         allowed_fields = ['first_name', 'last_name', 'email', 'is_active', 'is_staff', 'is_superuser', 'address_id']
         filtered_data = {key: value for key, value in data.items() if key in allowed_fields}
@@ -185,15 +199,15 @@ def api_v1_supplier():
     return {'success': success, 'message': 'Invalid request method.'}
 
 
-# curl -X UPDATE http://127.0.0.1:4000/api/v1/supplier/1 -H "Content-Type: application/json" -d '{"name":"mein_name","contact_name":"PeterWal"}'
-@app.route('/api/v1/supplier/<int:supplier_id>', methods=['GET', 'UPDATE', 'DELETE'])
+# curl -X PUT http://127.0.0.1:4000/api/v1/supplier/1 -H "Content-Type: application/json" -d '{"name":"mein_name","contact_name":"PeterWal"}'
+@app.route('/api/v1/supplier/<int:supplier_id>', methods=['GET', 'PUT', 'DELETE'])
 def api_v1_supplier_id(supplier_id):
     success = False
     if request.method == 'GET':
         result = con.get_supplier(supplier_id)
         success = True
         return {'success': success, 'result': result}
-    elif request.method == 'UPDATE':
+    elif request.method == 'PUT':
         data = request.get_json()
 
         allowed_fields = ['name', 'address', 'city', 'zip_code', 'country', 'contact_name', 'contact_phone', 'contact_email']

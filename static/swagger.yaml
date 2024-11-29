@@ -1,0 +1,360 @@
+openapi: 3.0.0
+info:
+  title: Beispiel-API
+  version: 1.0.0
+paths:
+  /test/users:
+    get:
+      summary: Liste der Benutzer abrufen
+      responses:
+        '200':
+          description: Erfolgreiche Antwort
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    name:
+                      type: string
+  /api/v1/user:
+    get:
+      summary: Alle Benutzer abrufen
+      responses:
+        '200':
+          description: Erfolgreiche Antwort
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    first_name:
+                      type: string
+                    last_name:
+                      type: string
+                    email:
+                      type: string
+                    is_active:
+                      type: boolean
+                    is_staff:
+                      type: boolean
+                    is_superuser:
+                      type: boolean
+                    address_id:
+                      type: integer
+    put:
+      summary: Benutzer erstellen
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                first_name:
+                  type: string
+                last_name:
+                  type: string
+                email:
+                  type: string
+                is_active:
+                  type: boolean
+                is_staff:
+                  type: boolean
+                is_superuser:
+                  type: boolean
+                address_id:
+                  type: integer
+      responses:
+        '201':
+          description: Benutzer erstellt
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  first_name:
+                    type: string
+                  last_name:
+                    type: string
+                  email:
+                    type: string
+                  is_active:
+                    type: boolean
+                  is_staff:
+                    type: boolean
+                  is_superuser:
+                    type: boolean
+                  address_id:
+                    type: integer
+  /api/v1/user/{user_id}:
+    get:
+      summary: Benutzer nach ID abrufen
+      parameters:
+        - in: path
+          name: user_id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Erfolgreiche Antwort
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  first_name:
+                    type: string
+                  last_name:
+                    type: string
+                  email:
+                    type: string
+                  is_active:
+                    type: boolean
+                  is_staff:
+                    type: boolean
+                  is_superuser:
+                    type: boolean
+                  address_id:
+                    type: integer
+        '404':
+          description: Benutzer nicht gefunden
+    put:
+      summary: Benutzer nach ID aktualisieren
+      parameters:
+        - in: path
+          name: user_id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                first_name:
+                  type: string
+                last_name:
+                  type: string
+                email:
+                  type: string
+                is_active:
+                  type: boolean
+                is_staff:
+                  type: boolean
+                is_superuser:
+                  type: boolean
+                address_id:
+                  type: integer
+      responses:
+        '200':
+          description: Benutzer aktualisiert
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '404':
+          description: Benutzer nicht gefunden
+    delete:
+      summary: Benutzer nach ID löschen
+      parameters:
+        - in: path
+          name: user_id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Benutzer gelöscht
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '404':
+          description: Benutzer nicht gefunden
+  /api/v1/supplier:
+    get:
+      summary: Alle Lieferanten abrufen
+      responses:
+        '200':
+          description: Erfolgreiche Antwort
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    name:
+                      type: string
+                    address:
+                      type: string
+                    city:
+                      type: string
+                    zip_code:
+                      type: string
+                    country:
+                      type: string
+                    contact_name:
+                      type: string
+                    contact_phone:
+                      type: string
+                    contact_email:
+                      type: string
+    put:
+      summary: Lieferant erstellen
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                address:
+                  type: string
+                city:
+                  type: string
+                zip_code:
+                  type: string
+                country:
+                  type: string
+                contact_name:
+                  type: string
+                contact_phone:
+                  type: string
+                contact_email:
+                  type: string
+      responses:
+        '201':
+          description: Lieferant erstellt
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+  /api/v1/supplier/{supplier_id}:
+    get:
+      summary: Lieferant nach ID abrufen
+      parameters:
+        - in: path
+          name: supplier_id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Erfolgreiche Antwort
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+                  address:
+                    type: string
+                  city:
+                    type: string
+                  zip_code:
+                    type: string
+                  country:
+                    type: string
+                  contact_name:
+                    type: string
+                  contact_phone:
+                    type: string
+                  contact_email:
+                    type: string
+        '404':
+          description: Lieferant nicht gefunden
+    put:
+      summary: Lieferant nach ID aktualisieren
+      parameters:
+        - in: path
+          name: supplier_id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                address:
+                  type: string
+                city:
+                  type: string
+                zip_code:
+                  type: string
+                country:
+                  type: string
+                contact_name:
+                  type: string
+                contact_phone:
+                  type: string
+                contact_email:
+                  type: string
+      responses:
+        '200':
+          description: Lieferant aktualisiert
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '404':
+          description: Lieferant nicht gefunden
+    delete:
+      summary: Lieferant nach ID löschen
+      parameters:
+        - in: path
+          name: supplier_id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Lieferant gelöscht
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '404':
+          description: Lieferant nicht gefunden

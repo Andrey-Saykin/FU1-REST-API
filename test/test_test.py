@@ -1,5 +1,6 @@
 from test import bonus, check_str_len, check_boolean
 
+
 def test_bonus_AnweisungsUeberdeckung_1():
     assert bonus(5,5) == 40
 
