@@ -71,12 +71,7 @@ def shop():
         context['user'] = session['user']   
     return render_template('shop_member.html', **context)
 
-# API Routes
-
-# Beispiel-Endpunkt
-@app.route('/test/users', methods=['GET'])
-def get_users():
-    return jsonify([{'id': 1, 'name': 'Bauer'}, {'id': 2, 'name': 'Schulze'}])
+# API Routes    
 
 # curl -X GET http://127.0.0.1:4000/api/v1/user -H "Content-Type: application/json"
 # curl -X PUT http://127.0.0.1:4000/api/v1/user -H "Content-Type: application/json" -d '{"first_name":"deinvorname", "last_name":"deinnachname", "email":"deineemail@gmail.com","is_active":true,"is_staff":false,"is_superuser":false,"address_id":null}'

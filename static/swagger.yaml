@@ -3,23 +3,6 @@ info:
   title: Beispiel-API
   version: 1.0.0
 paths:
-  /test/users:
-    get:
-      summary: Liste der Benutzer abrufen
-      responses:
-        '200':
-          description: Erfolgreiche Antwort
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    id:
-                      type: integer
-                    name:
-                      type: string
   /api/v1/user:
     get:
       summary: Alle Benutzer abrufen
